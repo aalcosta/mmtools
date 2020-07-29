@@ -1,0 +1,53 @@
+{
+  "attributes": ["STR", "STA", "DEX", "AGI", "FGT", "INT", "PER", "PRE"],
+
+  "defenses": [
+    "Dodge (AGI)",
+    "Parry (FGT)",
+    "Fort",
+    "Refl",
+    "Will",
+    "Toughness"
+  ],
+
+  "effectActivation": ["None", "Free", "Move", "Standard", "Reaction"],
+
+  "effectDurations": ["Instantaneous", "Sustained", "Permanent"],
+
+  "effectRange": {
+    "Personal": {},
+    "Close": { "reach": "5ft", "check": "AT vs Parry" },
+    "Ranged": { "reach": "RANK * 25ft", "check": "AT vs Dodge" },
+    "Perception": { "reach": "", "check": "" }
+  },
+
+  "effectTypes": {
+    "Attack": { "activation": "Standard", "sustain": "Standard" },
+    "Control": { "activation": "Standard", "sustain": "Standard" },
+    "Defense": { "activation": "None", "sustain": "None" },
+    "General": { "activation": "Varies", "sustain": "Varies" },
+    "Moviment": { "activation": "Free", "sustain": "Free" },
+    "Senses": { "activation": "Free", "sustain": "Free" }
+  },
+
+  "effects": [
+    {
+      "name": "Affliction",
+      "type": "Attack",
+      "activation": "Standard",
+      "duration": "Instantaneous",
+      "range": "Close",
+      "resistance": "Fort/Will",
+      "cost": { "points": 1, "flat": false }
+    },
+    {
+      "name": "Damage",
+      "type": "Attack",
+      "activation": "Standard",
+      "duration": "Instantaneous",
+      "range": "Close",
+      "resistance": "Thoughness",
+      "cost": { "points": 1, "flat": false }
+    }
+  ]
+}

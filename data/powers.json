@@ -1,0 +1,25 @@
+{
+  "actionTypes": ["None", "Standard"],
+
+  "effectDurations": ["Instantaneous", "Sustained", "Permanent"],
+
+  "effectTypes": {
+    "Attack": { "activation": "Standard", "duration": "None" },
+    "Control": { "activation": "Standard", "sustain": "Standard" },
+    "Defense": { "activation": "None", "sustain": "None" },
+    "General": { "activation": "Varies", "sustain": "Varies" },
+    "Moviment": { "activation": "Free", "sustain": "Free" },
+    "Senses": { "activation": "Free", "sustain": "Free" }
+  },
+
+  "effects": [
+    {
+      "name": "Affliction",
+      "type": "Attack"
+    },
+    {
+      "name": "Damage",
+      "type": "Attack"
+    }
+  ]
+}
