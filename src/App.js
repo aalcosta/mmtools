@@ -1,105 +1,79 @@
-import React from "react";
 import metadata from "../data/powers.json";
 import "./styles.css";
 
+import React from "react";
+import { HtmlOutput, HtmlSelect, HtmlText } from "./HtmlUtils.js";
+
 export default function App() {
-  function OutputText({ id, label, value }) {
-    return (
-      <div>
-        <label htmlFor={id}>
-          <strong>{label}:</strong>
-        </label>
-        <input type="text" id={id} value={value} readOnly />
-      </div>
-    );
+  function lookupEffect(sourceEffect) {
+    return metadata.effects.find(effect => effect.name === sourceEffect);
   }
 
-  function InputText({ id, label, value }) {
-    const storedValue = window.localStorage.getItem(id) || value || "";
-    const [stateValue, setStateValue] = React.useState(storedValue);
-    React.useEffect(() => window.localStorage.setItem(id, stateValue));
+  function MMPowerStats({ sourceEffect }) {
+    const power = lookupEffect(sourceEffect);
 
-    const onChange = event => setStateValue(event.target.value);
-    console.info(stateValue);
-    return (
-      <div>
-        <label htmlFor={id}>
-          <strong>{label}:</strong>
-        </label>
-        <input type="text" onChange={onChange} id={id} value={stateValue} />
-      </div>
-    );
-  }
+    if (!power) {
+      return <fieldset />;
+    }
 
-  function InputSelect({ id, label, items, selected }) {
-    const storedValue = window.localStorage.getItem(id) || selected;
-    const [value, setValue] = React.useState(storedValue);
-    React.useEffect(() => window.localStorage.setItem(id, value));
-
-    const onChange = event => {
-      const selectedItem = items.find(elem => elem.key === event.target.value);
-      setValue(selectedItem.key);
-    };
-
-    const listItems = items.map(item => (
-      <option key={item.key}>{item.value}</option>
-    ));
-    return (
-      <div>
-        <label htmlFor={id}>
-          <strong>{label}:</strong>
-        </label>
-        <select onChange={onChange} id={id} value={value || ""}>
-          {listItems}
-        </select>
-      </div>
-    );
-  }
-
-  function MMPowersList() {
-    const listItems = metadata.effects.map(item => {
-      return {
-        key: item.name,
-        value: item.name
-      };
-    });
-    return (
-      <InputSelect id="mmPowerList" label="Power Effect" items={listItems} />
-    );
-  }
-
-  function MMPowerStats() {
-    const power = metadata.effects[0];
-    const powerCost = `${power.powerCost} per RANK`;
-    console.log(metadata);
+    const powerCost = `${power.cost.points} per RANK`;
     return (
       <fieldset>
-        <OutputText id="mmPowerType" label="Type" value={power.type} />
-        <OutputText
+        <HtmlOutput id="mmPowerType" label="Type" value={power.type} />
+        <HtmlOutput
           id="mmPowerAction"
           label="Action"
           value={power.activation}
         />
-        <OutputText id="mmPowerRange" label="Range" value={power.range} />
-        <OutputText
+        <HtmlOutput id="mmPowerRange" label="Range" value={power.range} />
+        <HtmlOutput
           id="mmPowerDuration"
           label="Duration"
           value={power.duration}
         />
-        <OutputText id="mmPowerResist" label="Resistance" value={power.range} />
-        <OutputText id="mmPowerCost" label="Cost" value={powerCost} />
+        <HtmlOutput
+          id="mmPowerResist"
+          label="Resistance"
+          value={power.resistance}
+        />
+        <HtmlOutput id="mmPowerCost" label="Cost" value={powerCost} />
       </fieldset>
     );
   }
 
   function MMForm() {
+    const baseEffects = metadata.effects.map(effect => {
+      return {
+        key: effect.name,
+        value: effect.name
+      };
+    });
+
+    const [sourceEffectName, setSourceEffectName] = React.useState(
+      metadata.effects[0].name
+    );
+    const onSourceEffectChange = event =>
+      setSourceEffectName(event.target.value);
+
+    const [finalCost, setFinalCost] = React.useState({
+      perRank: 0,
+      flat: 0
+    });
+
     return (
       <form>
-        <InputText id="mmPowerName" label="Power Name" />
+        <HtmlText id="mmPowerName" label="Power Name" />
         <hr />
-        <MMPowersList />
-        <MMPowerStats />
+        <HtmlSelect
+          id="mmPowerBaseEffect"
+          label="Base Effect"
+          items={baseEffects}
+          selected={sourceEffectName}
+          onSelectedChange={onSourceEffectChange}
+        />
+        <MMPowerStats sourceEffect={sourceEffectName} />
         <hr />
+        <HtmlOutput id="mmPowerCost" label="Final Cost" value="finalCost" />
       </form>
     );
   }
